@@ -1,8 +1,6 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
 import events from "@/lib/constants";
-import { time } from "console";
-
 
 const Home = () => {
     return (
@@ -18,7 +16,7 @@ const Home = () => {
                 <h3>Featured Events</h3>
                 <ul className="events">
                     {events.map((event) => (
-                        <li key={event.title}>
+                        <li key={event.title} className="list-none">
                             <EventCard {...event} />
                         </li>
                     ))}
