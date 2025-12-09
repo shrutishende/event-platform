@@ -7,7 +7,16 @@ const nextConfig: NextConfig = {
     // experimental: {
     //     turbopackFileSystemCacheForDev: true,
     // },
-
+    cacheComponents: true,
+    images:{
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
+                
+        }
+    ]
+},
     async rewrites() {
         return [
             {
