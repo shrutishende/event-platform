@@ -52,23 +52,44 @@ const EventDetailsPage = async ({
     "use cache";
     cacheLife("minutes");
     const { slug } = await params;
-    const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+  
+    let event;
+    try {
+        const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
+            next: { revalidate: 60 },
+        });
+
+        if (!request.ok) {
+            if (request.status === 404) {
+                return notFound();
+            }
+            throw new Error(`Failed to fetch event: ${request.statusText}`);
+        }
+
+        const response = await request.json();
+        event = response.event;
+
+        if (!event) {
+            return notFound();
+        }
+    } catch (error) {
+        console.error("Error fetching event:", error);
+        return notFound();
+    }
 
     const {
-        event: {
-            description,
-            image,
-            overview,
-            date,
-            time,
-            location,
-            mode,
-            agenda,
-            audience,
-            tags,
-            organizer,
-        },
-    } = await request.json();
+        description,
+        image,
+        overview,
+        date,
+        time,
+        location,
+        mode,
+        agenda,
+        audience,
+        tags,
+        organizer,
+    } = event;
 
     if (!description) return notFound();
 
@@ -148,7 +169,7 @@ const EventDetailsPage = async ({
                                 Be the first to book your spot!
                             </p>
                         )}
-                        <BookEvent />
+                        <BookEvent eventId={event._id} slug={event.slug} />
                     </div>
                 </aside>
             </div>
